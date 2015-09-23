@@ -1,0 +1,13 @@
+https://www.odoo.com/es_ES/forum/help-1/question/module-to-relate-zip-code-to-country-73758
+https://github.com/OCA/partner-contact/tree/8.0/base_location
+https://github.com/OCA/partner-contact/tree/8.0/base_location_geonames_import
+
+https://www.odoo.com/apps/modules/8.0/wk_report_per_shop/
+GEOPY:
+  https://geopy.readthedocs.org/en/1.10.0/
+
+
+MODULOS DEPENDS:
+  https://github.com/OCA/partner-contact
+  https://www.odoo.com/apps/modules?search=Captcha
+  https://www.odoo.com/apps/modules/8.0/website_recaptcha_reloaded/

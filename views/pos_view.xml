@@ -1,0 +1,31 @@
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="res_post_view">
+          <field name="name">pos.config.form</field>
+          <field name="model">pos.config</field>
+          <field name="inherit_id" ref="point_of_sale.view_pos_config_form"/>
+          <field name="arch" type="xml">
+            <field name="barcode_price" position="after">
+              <field name="more_options"/>
+            </field>
+            <xpath expr="//group[05]" position="after">
+              <notebook attrs="{'invisible': [('more_options', '=', False)]}">
+                <page string="Information google maps">
+                  <group>
+                    <group>
+                        <field name="url_lat_lng" widget="url"/>
+                        <field name="lat" attrs="{'required': [('more_options','=',True)]}"/>
+                        <field name="lng" attrs="{'required': [('more_options','=',True)]}"/>
+                        <field name="radius"/>
+                    </group>
+                    <group>
+                      <field name="info" widget="html" nolabel="1"/>
+                    </group>
+                  </group>
+                </page>
+              </notebook>
+            </xpath>
+          </field>
+        </record>
+    </data>
+</openerp>

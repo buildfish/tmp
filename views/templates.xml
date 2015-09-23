@@ -1,0 +1,124 @@
+<openerp>
+    <data>
+        <!-- Locals -->
+        <template id="website.point_locals_radius" name="Ours locals" page="True">
+          <t t-call="website.layout">
+            <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+            <style>
+              #map {
+                width: 100%;
+                height: 500px;
+              }
+            </style>
+            <div id="wrap">
+              <div class="oe_structure"/>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-8" id="map">
+                        </div>
+                    </div>
+                </div>
+              <div class="oe_structure"/>
+            </div>
+    <script>
+
+function initMap() {  
+    // Create the map.
+
+    markers = Array();
+    infoWindows = Array();
+
+    //create empty LatLngBounds object
+    var bounds = new google.maps.LatLngBounds();
+  
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: {lat: 37.090, lng: -95.712},
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+
+    // Construct the circle for each value in citymap.
+    // Note: We scale the area of the circle based on the population.
+
+
+    var api_odoo = "/page/point_locals_radius_json";
+
+    // and remember the jqxhr object for this request
+    $.getJSON(api_odoo, function (citymap) {
+        var i = 0; 
+        for (var city in citymap) {
+            // Add the circle for this city to the map.
+            var cityCircle = new google.maps.Circle({
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: '#FF0000',
+                fillOpacity: 0.35,
+                map: map,
+                center: citymap[city].center,
+                radius: citymap[city].population // in meters(en metros)
+                //radius: Math.sqrt(citymap[city].population) * 100
+            });
+            var icon = '/website_delivery_point_radius/static/src/img/point.png';
+                                
+            var marker = new google.maps.Marker({
+               position: citymap[city].center,
+               map: map,
+               title: 'Click here to open info window',
+               icon: icon,
+               infoWindowIndex : i
+            });
+
+            //var phillyContent = '<span style="font-size:10px;">Philadelphia, PA</span>';
+
+
+            var infoWindow = new google.maps.InfoWindow({
+               content: citymap[city].phillyContent,
+               maxWidth:180
+            });
+
+            //infoWindow.open(map, marker);
+                                          
+            google.maps.event.addListener(marker, 'click', 
+                function(event)
+                    {
+                        map.panTo(event.latLng);
+                        map.setZoom(16);
+                        infoWindows[this.infoWindowIndex].open(map, this);
+                    }
+            );
+
+            infoWindows.push(infoWindow);
+            markers.push(marker);
+            i = i + 1;
+            /*                        
+            google.maps.event.addListener
+                   (infoWindow,'closeclick', function() {
+               reCenterMap();
+            });
+                          
+            infoWindow.open(map, marker); */
+
+
+        } //endfor
+
+        //extend the bounds to include each marker's position
+        bounds.extend(marker.position);
+        
+        //now fit the map to the newly inclusive bounds
+        map.fitBounds(bounds);
+
+        //(optional) restore the zoom level after the map is done scaling
+        var listener = google.maps.event.addListener(map, "idle", function () {
+            map.setZoom(12);
+            google.maps.event.removeListener(listener);
+        });
+
+    }); //end getJSON
+}
+              </script>
+            <script src="https://maps.googleapis.com/maps/api/js?signed_in=true&amp;callback=initMap"></script>
+          </t>
+        </template>
+    </data>
+</openerp>
